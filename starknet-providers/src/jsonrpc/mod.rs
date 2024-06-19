@@ -148,6 +148,7 @@ pub struct JsonRpcRequests {
     pub requests: Vec<JsonRpcRequest>,
 }
 
+/// Represents the data for various JSON-RPC requests
 #[derive(Debug, Clone, Serialize)]
 pub enum JsonRpcRequestData {
     /// Request data for `starknet_specVersion`.
@@ -316,6 +317,7 @@ where
             }
         }
     }
+
     async fn send_requests<I, P, R>(&self, requests: I) -> Result<Vec<R>, ProviderError>
     where
         I: IntoIterator<Item = (JsonRpcMethod, P)> + Send + Sync,
@@ -373,11 +375,11 @@ where
     where
         B: AsRef<BlockId> + Send + Sync,
     {
-        let requests = block_ids.iter().map(|b_id| {
+        let requests = block_ids.iter().map(|block_id| {
             (
                 JsonRpcMethod::GetBlockWithTxHashes,
                 GetBlockWithTxHashesRequestRef {
-                    block_id: b_id.as_ref(),
+                    block_id: block_id.as_ref(),
                 },
             )
         });
