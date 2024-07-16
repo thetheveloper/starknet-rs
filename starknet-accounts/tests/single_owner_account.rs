@@ -309,15 +309,20 @@ async fn can_execute_eth_transfer_invoke_v1_inner<P: Provider + Send + Sync>(
         Felt::from_hex("049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7").unwrap();
 
     let mut account =
-        SingleOwnerAccount::new(provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
+        SingleOwnerAccount::new(&provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
     account.set_block_id(BlockId::Tag(BlockTag::Pending));
 
+    let nonce = provider
+        .get_nonce(BlockId::Tag(BlockTag::Latest), address)
+        .await
+        .unwrap();
     let result = account
         .execute_v1(vec![Call {
             to: eth_token_address,
             selector: get_selector_from_name("transfer").unwrap(),
             calldata: vec![Felt::from_hex("0x1234").unwrap(), Felt::ONE, Felt::ZERO],
         }])
+        .nonce(nonce)
         .max_fee(Felt::from_dec_str("1000000000000000000").unwrap())
         .send()
         .await
@@ -345,15 +350,20 @@ async fn can_execute_eth_transfer_invoke_v3_inner<P: Provider + Send + Sync>(
         Felt::from_hex("049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7").unwrap();
 
     let mut account =
-        SingleOwnerAccount::new(provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
+        SingleOwnerAccount::new(&provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
     account.set_block_id(BlockId::Tag(BlockTag::Pending));
 
+    let nonce = provider
+        .get_nonce(BlockId::Tag(BlockTag::Latest), address)
+        .await
+        .unwrap();
     let result = account
         .execute_v3(vec![Call {
             to: eth_token_address,
             selector: get_selector_from_name("transfer").unwrap(),
             calldata: vec![Felt::from_hex("0x1234").unwrap(), Felt::ONE, Felt::ZERO],
         }])
+        .nonce(nonce)
         .gas(200000)
         .gas_price(500000000000000)
         .send()
@@ -379,9 +389,13 @@ async fn can_execute_eth_transfer_invoke_v3_with_manual_gas_inner<P: Provider + 
         Felt::from_hex("049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7").unwrap();
 
     let mut account =
-        SingleOwnerAccount::new(provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
+        SingleOwnerAccount::new(&provider, signer, address, CHAIN_ID, ExecutionEncoding::New);
     account.set_block_id(BlockId::Tag(BlockTag::Pending));
 
+    let nonce = provider
+        .get_nonce(BlockId::Tag(BlockTag::Latest), address)
+        .await
+        .unwrap();
     let result = account
         .execute_v3(vec![Call {
             to: eth_token_address,
@@ -392,6 +406,7 @@ async fn can_execute_eth_transfer_invoke_v3_with_manual_gas_inner<P: Provider + 
                 Felt::ZERO,
             ],
         }])
+        .nonce(nonce)
         .gas(200000)
         .send()
         .await
