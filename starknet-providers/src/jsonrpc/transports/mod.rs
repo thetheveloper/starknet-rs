@@ -27,6 +27,7 @@ pub trait JsonRpcTransport {
         P: Serialize + Send + Sync,
         R: DeserializeOwned;
 
+    /// Sends multiple JSON-RPC requests and retrieves their responses.
     async fn send_requests<I, P, R>(
         &self,
         requests: I,

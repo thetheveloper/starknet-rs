@@ -25,6 +25,7 @@ use std::{any::Any, error::Error, fmt::Debug};
 /// in practice, as public sequencer servers have generally block access to most methods.
 use crate::jsonrpc::JsonRpcMethod;
 
+/// Represents a provider interface for interacting with the Starknet network.
 #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
 #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 #[auto_impl(&, Box, Arc)]
@@ -335,6 +336,7 @@ pub trait Provider {
         I: IntoIterator<Item = (JsonRpcMethod, P)> + Send + Sync,
         P: Serialize + Send + Sync;
 
+    /// Retrieves blocks information with transaction hashes for a batch of block IDs.
     async fn get_block_with_tx_hashes_batch<B>(
         &self,
         block_ids: Vec<B>,

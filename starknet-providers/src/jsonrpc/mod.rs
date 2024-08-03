@@ -129,10 +129,13 @@ pub enum JsonRpcMethod {
 #[derive(Debug, Clone, Serialize)]
 #[serde(untagged)]
 pub enum JsonRpcRequestParams<'a> {
+    /// Parameters for getting a block with transaction hashes.
     GetBlockWithTxHashes(GetBlockWithTxHashesRequestRef<'a>),
+    /// Parameters for getting a block with full transactions.
     GetBlockWithTxs(GetBlockWithTxsRequestRef<'a>),
 }
 
+/// Represents a JSON-RPC request with a unique identifier.
 #[derive(Debug, Clone)]
 pub struct JsonRpcRequest {
     /// ID of the request. Useful for identifying responses in certain transports like `WebSocket`.
